@@ -14,23 +14,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-using System;
-using System.Windows.Forms;
 
-
-namespace Gen_Con_Hotel_Watch
+namespace Gen_Con_Hotel_Watch.Hotels.Info
 {
-    static class Program
+    public enum DistanceUnit
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
-        }
+        blocks = 1,
+        yards = 2,
+        miles = 3,
+        meters = 4,
+        kilometers = 5
     }
 }

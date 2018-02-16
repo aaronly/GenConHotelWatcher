@@ -14,76 +14,38 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+using Gen_Con_Hotel_Watch.Notifications;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace Gen_Con_Hotel_Watch
 {
-    public partial class FormEmail : Form
+    public partial class EmailForm : Form
     {
         int lastNumber;
         int shift = 26;
         int initialHeight;
 
-        public static EmailInfo[] getEmail;
-        FormSearch getForm = (FormSearch)Application.OpenForms["FormSearch"];
-
-        public FormEmail(EmailInfo[] getEmail)
+        public EmailForm()
         {
             InitializeComponent();
         }
 
-        private void getEmailInfo()
-        {
-            getEmail = null;
-            Control[] comboBoxSMTPArray = findControl("comboBoxSMTP");
-            Control[] textBoxEmailFromArray = findControl("textBoxEmailFrom");
-            Control[] maskedTextBoxPasswordArray = findControl("maskedTextBoxPassword");
-            Control[] textBoxEmailToArray = findControl("textBoxEmailTo");
-
-            // Get the high number of email addresses possible and resize the array
-            Control comboBoxSMTPlast = findNewest(comboBoxSMTPArray);
-            int.TryParse(comboBoxSMTPlast.Name.Substring(comboBoxSMTPlast.Name.Length - 1), out lastNumber);
-            Array.Resize(ref getEmail, lastNumber + 1);
-
-            for (int i = 0; i < lastNumber + 1; i++)
-            {
-                string smtpString = comboBoxSMTPArray[i].Text;
-                string fromString = textBoxEmailFromArray[i].Text;
-                string pwordString = maskedTextBoxPasswordArray[i].Text;
-                string toString = textBoxEmailToArray[i].Text;
-
-                if ((fromString == "") | (pwordString == "") | (toString == ""))
-                {
-                    Array.Resize(ref getEmail, i);
-                    return;
-                }
-                else
-                {
-                    EmailInfo thisEmail = new EmailInfo();
-                    thisEmail.smtp = smtpString;
-                    thisEmail.from = fromString;
-                    thisEmail.pword = pwordString;
-                    thisEmail.to = toString;
-                    getEmail[i] = thisEmail;
-                }
-            }
-        }
-
-        private void buttonCancel_Click(object sender, EventArgs e)
+        private void ButtonCancel_Click(object sender, EventArgs e)
         {
             Dispose();
         }
-        private void buttonSubmit_Click(object sender, EventArgs e)
+        private void ButtonSubmit_Click(object sender, EventArgs e)
         {
-            getEmailInfo();
-            getForm.emailInfo = getEmail;
+            List<Email> emails = GetEmailInfo();
+            NotificationManager.emails = emails;
             Dispose();
         }
-        private void buttonTest_Click(object sender, EventArgs e)
+        private void ButtonTest_Click(object sender, EventArgs e)
         {
-            getEmailInfo();
+            List<Email> emails = GetEmailInfo();
 
             string subject = "Test Email from Gen Con Hotel Watch";
             string body = "<html><body><ul>";
@@ -91,48 +53,103 @@ namespace Gen_Con_Hotel_Watch
             body += "<li><b>Hotel 2</b><ul><li>2 blocks away<br></li></ul></li>";
             body += "</ul></body></html>";
 
-            getForm.sendEmail(getEmail, subject, body);
+            NotificationManager.SendTestEmail(emails, subject, body);
         }
 
-
-        private Control[] findControl(string search)
+        private List<Email> GetEmailInfo()
         {
-            Control[] found = new Control[0];
-            int ctr = 1;
-            foreach (Control item in Controls)
+            List<Email> emails = null;
+            List<Control> comboBoxSMTPArray = FindControlsByName("comboBoxSMTP");
+            List<Control> textBoxEmailFromArray = FindControlsByName("textBoxEmailFrom");
+            List<Control> maskedTextBoxPasswordArray = FindControlsByName("maskedTextBoxPassword");
+            List<Control> textBoxEmailToArray = FindControlsByName("textBoxEmailTo");
+
+            for (int i = 0; i < comboBoxSMTPArray.Count; i++)
             {
-                if (item.Name.Contains(search))
+                Email email = new Email
                 {
-                    Array.Resize(ref found, ctr);
-                    found[ctr-1] = item;
-                    ctr += 1;
-                }
+                    Smtp = comboBoxSMTPArray[i].Text,
+                    From = textBoxEmailFromArray[i].Text,
+                    Pword = maskedTextBoxPasswordArray[i].Text,
+                    To = textBoxEmailToArray[i].Text
+                };
+                emails.Add(email);
             }
-            return found;
+
+            return emails;
         }
-        private Control findNewest(Control[] controls)
+
+        private void AddLabel(string name)
         {
-            Control result = controls[0];
-            if (controls.Length == 1)
-                return result;
-
-            for (int i = 1; i < controls.Length; i++)
+            // find previous label
+            Control previousLabel = FindLatest(name);
+            // get number of previous label
+            int.TryParse(previousLabel.Name.Substring(previousLabel.Name.Length - 1), out lastNumber);
+            // create new label
+            Label newLabel = new Label
             {
-                string name1 = result.Name;
-                string name2 = controls[i].Name;
-                int pos1, pos2;
-                if (!(int.TryParse(name1.Substring(name1.Length - 1), out pos1)))
-                    return result;
-                if (!(int.TryParse(name2.Substring(name2.Length - 1), out pos2)))
-                    return result;
+                Name = name + (lastNumber + 1).ToString(),
+                Size = new Size(previousLabel.Width, previousLabel.Height),
+                Text = previousLabel.Text,
+                Top = previousLabel.Top + shift,
+                Left = previousLabel.Left
+            };
 
-                if (pos1 < pos2)
-                    result = controls[i];
-            }
-
-            return result;
+            Controls.Add(newLabel);
         }
-        private void buttonAdd_Click(object sender, EventArgs e)
+        private void AddTextBox(string name, Boolean isMasked)
+        {
+            // find previous textBox
+            Control textBoxPrevious = FindLatest(name);
+            // get the number of previous textBox
+            int.TryParse(textBoxPrevious.Name.Substring(textBoxPrevious.Name.Length - 1), out lastNumber);
+            // create new textBox
+            if(isMasked)
+            {
+                MaskedTextBox maskedTextBox = new MaskedTextBox
+                {
+                    Name = name + (lastNumber + 1).ToString(),
+                    Size = new Size(textBoxPrevious.Width, textBoxPrevious.Height),
+                    Top = textBoxPrevious.Top + shift,
+                    Left = textBoxPrevious.Left,
+                    PasswordChar = '*'
+                };
+                Controls.Add(maskedTextBox);
+
+            } else
+            {
+                TextBox textBox = new TextBox
+                {
+                    Name = name + (lastNumber + 1).ToString(),
+                    Size = new Size(textBoxPrevious.Width, textBoxPrevious.Height),
+                    Top = textBoxPrevious.Top + shift,
+                    Left = textBoxPrevious.Left
+                };
+                Controls.Add(textBox);
+            }
+        }
+        private void AddComboBox(string name)
+        {
+            // get info from previous combo box
+            Control comboBoxPrevious = FindLatest(name);
+            int.TryParse(comboBoxPrevious.Name.Substring(comboBoxPrevious.Name.Length - 1), out lastNumber);
+            object[] contents = new object[((ComboBox)comboBoxPrevious).Items.Count];
+            ((ComboBox)comboBoxPrevious).Items.CopyTo(contents, 0);
+            
+            ComboBox comboBox = new ComboBox
+            {
+                Name = name + (lastNumber + 1).ToString(),
+                Size = new Size(comboBoxPrevious.Width, comboBoxPrevious.Height),
+                Top = comboBoxPrevious.Top + shift,
+                Left = comboBoxPrevious.Left,
+                Text = comboBoxPrevious.Text
+            };
+            comboBox.Items.AddRange(contents);
+
+            Controls.Add(comboBox);
+        }
+
+        private void ButtonAdd_Click(object sender, EventArgs e)
         {
             if (Height < initialHeight + shift * 9)
             {
@@ -145,100 +162,22 @@ namespace Gen_Con_Hotel_Watch
                     buttonAdd.Enabled = false;
 
             }
-            else
-                return;
+            else return;
 
-            // labelEmailSMTP
-            Control[] labelSMTPArray  = findControl("labelEmailSMTP");
-            Control labelSMTPlast = findNewest(labelSMTPArray);
-            int.TryParse(labelSMTPlast.Name.Substring(labelSMTPlast.Name.Length - 1), out lastNumber);
-            Label labelEmailSMTP = new Label();
-            labelEmailSMTP.Name = "labelEmailSMTP" + (lastNumber + 1).ToString();
-            labelEmailSMTP.Size = new Size(labelSMTPlast.Width, labelSMTPlast.Height);
-            labelEmailSMTP.Text = labelSMTPlast.Text;
-            labelEmailSMTP.Top = labelSMTPlast.Top + shift;
-            labelEmailSMTP.Left = labelSMTPlast.Left;
-            Controls.Add(labelEmailSMTP);
-            // comboBoxSMTP
-            Control[] comboBoxSMTPArray = findControl("comboBoxSMTP");
-            Control comboBoxSMTPlast = findNewest(comboBoxSMTPArray);
-            int.TryParse(comboBoxSMTPlast.Name.Substring(comboBoxSMTPlast.Name.Length - 1), out lastNumber);
-            ComboBox comboBoxSMTP = new ComboBox();
-            comboBoxSMTP.Name = "comboBoxSMTP" + (lastNumber + 1).ToString();
-            object[] contents = new object[((ComboBox)comboBoxSMTPlast).Items.Count];
-            ((ComboBox)comboBoxSMTPlast).Items.CopyTo(contents, 0);
-            comboBoxSMTP.Items.AddRange(contents);
-            comboBoxSMTP.Size = new System.Drawing.Size(comboBoxSMTPlast.Width, comboBoxSMTPlast.Height);
-            comboBoxSMTP.Top = comboBoxSMTPlast.Top + shift;
-            comboBoxSMTP.Left = comboBoxSMTPlast.Left;
-            comboBoxSMTP.Text = comboBoxSMTPlast.Text;
-            Controls.Add(comboBoxSMTP);
-            // labelEmailFrom
-            Control[] labelEmailFromArray = findControl("labelEmailFrom");
-            Control labelEmailFromlast = findNewest(labelEmailFromArray);
-            int.TryParse(labelEmailFromlast.Name.Substring(labelEmailFromlast.Name.Length - 1), out lastNumber);
-            Label labelEmailFrom = new Label();
-            labelEmailFrom.Name = "labelEmailFrom" + (lastNumber + 1).ToString();
-            labelEmailFrom.Size = new Size(labelEmailFromlast.Width, labelEmailFromlast.Height);
-            labelEmailFrom.Text = labelEmailFromlast.Text;
-            labelEmailFrom.Top = labelEmailFromlast.Top + shift;
-            labelEmailFrom.Left = labelEmailFromlast.Left;
-            Controls.Add(labelEmailFrom);
-            // textBoxEmailFrom
-            Control[] textBoxEmailFromArray = findControl("textBoxEmailFrom");
-            Control textBoxEmailFromlast = findNewest(textBoxEmailFromArray);
-            int.TryParse(textBoxEmailFromlast.Name.Substring(textBoxEmailFromlast.Name.Length - 1), out lastNumber);
-            TextBox textBoxEmailFrom = new TextBox();
-            textBoxEmailFrom.Name = "textBoxEmailFrom" + (lastNumber + 1).ToString();
-            textBoxEmailFrom.Size = new Size(textBoxEmailFromlast.Width, textBoxEmailFromlast.Height);
-            textBoxEmailFrom.Top = textBoxEmailFromlast.Top + shift;
-            textBoxEmailFrom.Left = textBoxEmailFromlast.Left;
-            Controls.Add(textBoxEmailFrom);
-            // labelEmailPassword
-            Control[] labelEmailPasswordArray = findControl("labelEmailPassword");
-            Control labelEmailPasswordlast = findNewest(labelEmailPasswordArray);
-            int.TryParse(labelEmailPasswordlast.Name.Substring(labelEmailPasswordlast.Name.Length - 1), out lastNumber);
-            Label labelEmailPassword = new Label();
-            labelEmailPassword.Name = "labelEmailPassword" + (lastNumber + 1).ToString();
-            labelEmailPassword.Size = new Size(labelEmailPasswordlast.Width, labelEmailPasswordlast.Height);
-            labelEmailPassword.Text = labelEmailPasswordlast.Text;
-            labelEmailPassword.Top = labelEmailPasswordlast.Top + shift;
-            labelEmailPassword.Left = labelEmailPasswordlast.Left;
-            Controls.Add(labelEmailPassword);
-            // maskedTextBoxPassword
-            Control[] maskedTextBoxPasswordArray = findControl("maskedTextBoxPassword");
-            Control maskedTextBoxPasswordlast = findNewest(maskedTextBoxPasswordArray);
-            int.TryParse(maskedTextBoxPasswordlast.Name.Substring(maskedTextBoxPasswordlast.Name.Length - 1), out lastNumber);
-            MaskedTextBox maskedTextBoxPassword = new MaskedTextBox();
-            maskedTextBoxPassword.Name = "maskedTextBoxPassword" + (lastNumber + 1).ToString();
-            maskedTextBoxPassword.Size = new Size(maskedTextBoxPasswordlast.Width, maskedTextBoxPasswordlast.Height);
-            maskedTextBoxPassword.Top = maskedTextBoxPasswordlast.Top + shift;
-            maskedTextBoxPassword.Left = maskedTextBoxPasswordlast.Left;
-            maskedTextBoxPassword.PasswordChar = '*';
-            Controls.Add(maskedTextBoxPassword);
-            // labelEmailTo
-            Control[] labelEmailToArray = findControl("labelEmailTo");
-            Control labelEmailTolast = findNewest(labelEmailToArray);
-            int.TryParse(labelEmailTolast.Name.Substring(labelEmailTolast.Name.Length - 1), out lastNumber);
-            Label labelEmailTo = new Label();
-            labelEmailTo.Name = "labelEmailTo" + (lastNumber + 1).ToString();
-            labelEmailTo.Size = new Size(labelEmailTolast.Width, labelEmailTolast.Height);
-            labelEmailTo.Text = labelEmailTolast.Text;
-            labelEmailTo.Top = labelEmailTolast.Top + shift;
-            labelEmailTo.Left = labelEmailTolast.Left;
-            Controls.Add(labelEmailTo);
-            // textBoxEmailTo
-            Control[] textBoxEmailToArray = findControl("textBoxEmailTo");
-            Control textBoxEmailTolast = findNewest(textBoxEmailToArray);
-            int.TryParse(textBoxEmailTolast.Name.Substring(textBoxEmailTolast.Name.Length - 1), out lastNumber);
-            TextBox textBoxEmailTo = new TextBox();
-            textBoxEmailTo.Name = "textBoxEmailTo" + (lastNumber + 1).ToString();
-            textBoxEmailTo.Size = new Size(textBoxEmailTolast.Width, textBoxEmailTolast.Height);
-            textBoxEmailTo.Top = textBoxEmailTolast.Top + shift;
-            textBoxEmailTo.Left = textBoxEmailTolast.Left;
-            Controls.Add(textBoxEmailTo);
+            AddLabel("labelEmailSMTP");
+            AddComboBox("comboBoxSMTP");
+
+            AddLabel("labelEmailFrom");
+            AddTextBox("textBoxEmailFrom", false);
+
+            AddLabel("labelEmailPassword");
+            AddTextBox("maskedTextBoxPassword", true);
+
+            AddLabel("labelEmailTo");
+            AddTextBox("textBoxEmailTo", false);
+
         }
-        private void buttonRemove_Click(object sender, EventArgs e)
+        private void ButtonRemove_Click(object sender, EventArgs e)
         {
             if (!(Height == initialHeight))
             {
@@ -248,69 +187,73 @@ namespace Gen_Con_Hotel_Watch
                     buttonAdd.Enabled = true;
                 Height = Height - shift;
             }
-            else
-                return;
+            else return;
 
-            // labelEmailSMTP
-            Control[] labelSMTPArray = findControl("labelEmailSMTP");
-            Control labelSMTPlast = findNewest(labelSMTPArray);
-            labelSMTPlast.Dispose();
-            // comboBoxSMTP
-            Control[] comboBoxSMTPArray = findControl("comboBoxSMTP");
-            Control comboBoxSMTPlast = findNewest(comboBoxSMTPArray);
-            comboBoxSMTPlast.Dispose();
-            // labelEmailFrom
-            Control[] labelEmailFromArray = findControl("labelEmailFrom");
-            Control labelEmailFromlast = findNewest(labelEmailFromArray);
-            labelEmailFromlast.Dispose();
-            // textBoxEmailFrom
-            Control[] textBoxEmailFromArray = findControl("textBoxEmailFrom");
-            Control textBoxEmailFromlast = findNewest(textBoxEmailFromArray);
-            textBoxEmailFromlast.Dispose();
-            // labelEmailPassword
-            Control[] labelEmailPasswordArray = findControl("labelEmailPassword");
-            Control labelEmailPasswordlast = findNewest(labelEmailPasswordArray);
-            labelEmailPasswordlast.Dispose();
-            // maskedTextBoxPassword
-            Control[] maskedTextBoxPasswordArray = findControl("maskedTextBoxPassword");
-            Control maskedTextBoxPasswordlast = findNewest(maskedTextBoxPasswordArray);
-            maskedTextBoxPasswordlast.Dispose();
-            // labelEmailTo
-            Control[] labelEmailToArray = findControl("labelEmailTo");
-            Control labelEmailTolast = findNewest(labelEmailToArray);
-            labelEmailTolast.Dispose();
-            // textBoxEmailTo
-            Control[] textBoxEmailToArray = findControl("textBoxEmailTo");
-            Control textBoxEmailTolast = findNewest(textBoxEmailToArray);
-            textBoxEmailTolast.Dispose();
+            FindLatest("labelEmailSMTP").Dispose();
+            FindLatest("comboBoxSMTP").Dispose();
+            FindLatest("labelEmailFrom").Dispose();
+            FindLatest("textBoxEmailFrom").Dispose();
+            FindLatest("labelEmailPassword").Dispose();
+            FindLatest("maskedTextBoxPassword").Dispose();
+            FindLatest("labelEmailTo").Dispose();
+            FindLatest("textBoxEmailTo").Dispose();
         }
 
         private void FormEmail_Load(object sender, EventArgs e)
         {
             initialHeight = Height;
-            if (getEmail != null)
+            List<Email> emails = NotificationManager.emails;
+            if (emails != null)
             {
-                for (int i = 0; i < getEmail.Length; i++)
+                foreach(Email email in emails)
                 {
-                    if (i > 0)
-                        buttonAdd.PerformClick();
+                    Control comboBoxSMTPlast = FindLatest("comboBoxSMTP");
+                    Control textBoxEmailFromlast = FindLatest("textBoxEmailFrom");
+                    Control maskedTextBoxPasswordlast = FindLatest("maskedTextBoxPassword");
+                    Control textBoxEmailTolast = FindLatest("textBoxEmailTo");
 
-                    Control[] comboBoxSMTPArray = findControl("comboBoxSMTP");
-                    Control[] textBoxEmailFromArray = findControl("textBoxEmailFrom");
-                    Control[] maskedTextBoxPasswordArray = findControl("maskedTextBoxPassword");
-                    Control[] textBoxEmailToArray = findControl("textBoxEmailTo");
-
-                    Control comboBoxSMTPlast = findNewest(comboBoxSMTPArray);
-                    Control textBoxEmailFromlast = findNewest(textBoxEmailFromArray);
-                    Control maskedTextBoxPasswordlast = findNewest(maskedTextBoxPasswordArray);
-                    Control textBoxEmailTolast = findNewest(textBoxEmailToArray);
-
-                    comboBoxSMTPlast.Text = getEmail[i].smtp;
-                    textBoxEmailFromlast.Text = getEmail[i].from;
-                    maskedTextBoxPasswordlast.Text = getEmail[i].pword;
-                    textBoxEmailTolast.Text = getEmail[i].to;
+                    comboBoxSMTPlast.Text = email.Smtp;
+                    textBoxEmailFromlast.Text = email.From;
+                    maskedTextBoxPasswordlast.Text = email.Pword;
+                    textBoxEmailTolast.Text = email.To;
                 }
             }
+        }
+
+        private List<Control> FindControlsByName(string name)
+        {
+            List<Control> found = new List<Control>();
+            foreach (Control item in Controls)
+            {
+                if (item.Name.Contains(name))
+                    found.Add(item);
+            }
+            return found;
+        }
+
+        private Control FindLatest(string name)
+        {
+            List<Control> matches = FindControlsByName(name);
+
+            Control result = matches[0];
+
+            if (matches.Count == 1) return result;
+
+            foreach(Control c in matches)
+            {
+                string name1 = result.Name;
+                string name2 = c.Name;
+
+                if (!(int.TryParse(name1.Substring(name1.Length - 1), out int Pos1)))
+                    return result;
+                if (!(int.TryParse(name2.Substring(name2.Length - 1), out int Pos2)))
+                    return result;
+
+                if (Pos1 < Pos2)
+                    result = c;
+            }
+
+            return result;
         }
     }
 }

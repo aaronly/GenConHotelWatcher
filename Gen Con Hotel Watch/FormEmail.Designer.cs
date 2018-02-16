@@ -1,6 +1,6 @@
 ﻿namespace Gen_Con_Hotel_Watch
 {
-    partial class FormEmail
+    partial class EmailForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormEmail));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EmailForm));
             this.labelEmailSMTP0 = new System.Windows.Forms.Label();
             this.comboBoxSMTP0 = new System.Windows.Forms.ComboBox();
             this.labelEmailFrom0 = new System.Windows.Forms.Label();
@@ -130,7 +130,7 @@
             this.buttonAdd.TabIndex = 8;
             this.buttonAdd.Text = "Add";
             this.buttonAdd.UseVisualStyleBackColor = true;
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += new System.EventHandler(this.ButtonAdd_Click);
             // 
             // buttonRemove
             // 
@@ -142,7 +142,7 @@
             this.buttonRemove.TabIndex = 8;
             this.buttonRemove.Text = "Remove";
             this.buttonRemove.UseVisualStyleBackColor = true;
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            this.buttonRemove.Click += new System.EventHandler(this.ButtonRemove_Click);
             // 
             // buttonSubmit
             // 
@@ -153,7 +153,7 @@
             this.buttonSubmit.TabIndex = 17;
             this.buttonSubmit.Text = "Submit";
             this.buttonSubmit.UseVisualStyleBackColor = true;
-            this.buttonSubmit.Click += new System.EventHandler(this.buttonSubmit_Click);
+            this.buttonSubmit.Click += new System.EventHandler(this.ButtonSubmit_Click);
             // 
             // buttonCancel
             // 
@@ -165,7 +165,7 @@
             this.buttonCancel.TabIndex = 17;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
             // buttonTest
             // 
@@ -176,7 +176,7 @@
             this.buttonTest.TabIndex = 18;
             this.buttonTest.Text = "Test Email";
             this.buttonTest.UseVisualStyleBackColor = true;
-            this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
+            this.buttonTest.Click += new System.EventHandler(this.ButtonTest_Click);
             // 
             // FormEmail
             // 

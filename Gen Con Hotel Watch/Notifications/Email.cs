@@ -14,23 +14,27 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-using System;
-using System.Windows.Forms;
+using System.Collections;
 
-
-namespace Gen_Con_Hotel_Watch
+namespace Gen_Con_Hotel_Watch.Notifications
 {
-    static class Program
+    public class Email : IEnumerable
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        public string Smtp { get; set; }
+        public string From { get; set; }
+        public string Pword { get; set; }
+        public string To { get; set; }
+
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            return GetEnumerator();
+        }
+        public IEnumerator GetEnumerator()
+        {
+            foreach (Email item in this)
+            {
+                yield return item;
+            }
         }
     }
 }

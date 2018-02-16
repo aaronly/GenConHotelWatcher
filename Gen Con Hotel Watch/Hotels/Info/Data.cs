@@ -14,23 +14,35 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-using System;
-using System.Windows.Forms;
+using System.Collections;
 
-
-namespace Gen_Con_Hotel_Watch
+namespace Gen_Con_Hotel_Watch.Hotels.Info
 {
-    static class Program
+    public class Data : IEnumerable
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        public string Name { get; set; }
+        public bool Parking { get; set; }
+        public bool Breakfast { get; set; }
+
+        public Data(string Name, bool Parking, bool Breakfast)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            this.Name = Name;
+            this.Parking = Parking;
+            this.Breakfast = Breakfast;
         }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            foreach (Data item in this)
+            {
+                yield return item;
+            }
+        }
+
     }
 }

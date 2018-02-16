@@ -1,6 +1,6 @@
 ﻿namespace Gen_Con_Hotel_Watch
 {
-    partial class FormSearch
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSearch));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.buttonStart = new System.Windows.Forms.Button();
             this.labelKey = new System.Windows.Forms.Label();
             this.textBoxKey = new System.Windows.Forms.TextBox();
@@ -117,7 +117,7 @@
             this.buttonStart.TabIndex = 0;
             this.buttonStart.Text = "Start Search";
             this.buttonStart.UseVisualStyleBackColor = true;
-            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
+            this.buttonStart.Click += new System.EventHandler(this.Button_Start_Click);
             // 
             // labelKey
             // 
@@ -133,7 +133,7 @@
             this.labelKey.TabIndex = 1;
             this.labelKey.Text = "Housing Portal Access Key:";
             this.labelKey.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelKey.Click += new System.EventHandler(this.labelKey_Click);
+            this.labelKey.Click += new System.EventHandler(this.Key_Click);
             // 
             // textBoxKey
             // 
@@ -263,7 +263,7 @@
             this.buttonStop.TabIndex = 12;
             this.buttonStop.Text = "Stop Search";
             this.buttonStop.UseVisualStyleBackColor = true;
-            this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
+            this.buttonStop.Click += new System.EventHandler(this.Button_Stop_Click);
             // 
             // listViewHotels
             // 
@@ -284,8 +284,8 @@
             this.listViewHotels.TabIndex = 14;
             this.listViewHotels.UseCompatibleStateImageBehavior = false;
             this.listViewHotels.View = System.Windows.Forms.View.Details;
-            this.listViewHotels.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewHotels_ColumnClick);
-            this.listViewHotels.SelectedIndexChanged += new System.EventHandler(this.listViewHotels_SelectedIndexChanged);
+            this.listViewHotels.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ListViewHotels_ColumnClick);
+            this.listViewHotels.SelectedIndexChanged += new System.EventHandler(this.ListViewHotels_SelectedIndexChanged);
             // 
             // hotelName
             // 
@@ -325,7 +325,7 @@
             this.buttonClose.TabIndex = 15;
             this.buttonClose.Text = "Exit";
             this.buttonClose.UseVisualStyleBackColor = true;
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += new System.EventHandler(this.Button_Close_Click);
             // 
             // textBoxOverallRate
             // 
@@ -360,7 +360,7 @@
             this.checkBoxRepeat.Text = "Repeat every";
             this.checkBoxRepeat.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBoxRepeat.UseVisualStyleBackColor = true;
-            this.checkBoxRepeat.CheckedChanged += new System.EventHandler(this.checkBoxRepeat_CheckedChanged);
+            this.checkBoxRepeat.CheckedChanged += new System.EventHandler(this.CheckBox_Repeat_Changed);
             // 
             // comboBoxUnits
             // 
@@ -437,7 +437,7 @@
             // timer1
             // 
             this.timer1.Interval = 1000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.timer1.Tick += new System.EventHandler(this.Timer_Tick);
             // 
             // buttonEmailInfo
             // 
@@ -449,7 +449,7 @@
             this.buttonEmailInfo.TabIndex = 3;
             this.buttonEmailInfo.Text = "Email Info";
             this.buttonEmailInfo.UseVisualStyleBackColor = true;
-            this.buttonEmailInfo.Click += new System.EventHandler(this.buttonEmailInfo_Click);
+            this.buttonEmailInfo.Click += new System.EventHandler(this.Button_EmailInfo_Click);
             // 
             // checkBoxEmail
             // 
@@ -461,7 +461,7 @@
             this.checkBoxEmail.TabIndex = 2;
             this.checkBoxEmail.Text = "Email";
             this.checkBoxEmail.UseVisualStyleBackColor = true;
-            this.checkBoxEmail.CheckedChanged += new System.EventHandler(this.checkBoxEmail_CheckedChanged);
+            this.checkBoxEmail.CheckedChanged += new System.EventHandler(this.CheckBox_Email_Changed);
             // 
             // checkBoxPopup
             // 
@@ -500,7 +500,7 @@
             this.buttonZoomIn.TabIndex = 11;
             this.buttonZoomIn.Text = "+";
             this.buttonZoomIn.UseVisualStyleBackColor = true;
-            this.buttonZoomIn.Click += new System.EventHandler(this.buttonZoomIn_Click);
+            this.buttonZoomIn.Click += new System.EventHandler(this.Button_ZoomIn_Click);
             // 
             // buttonZoomOut
             // 
@@ -512,7 +512,7 @@
             this.buttonZoomOut.TabIndex = 11;
             this.buttonZoomOut.Text = "-";
             this.buttonZoomOut.UseVisualStyleBackColor = true;
-            this.buttonZoomOut.Click += new System.EventHandler(this.buttonZoomOut_Click);
+            this.buttonZoomOut.Click += new System.EventHandler(this.Button_ZoomOut_Click);
             // 
             // notifyIcon
             // 
@@ -521,8 +521,8 @@
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "Gen Con Hotel Search";
             this.notifyIcon.Visible = true;
-            this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
-            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
+            this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon_MouseClick);
+            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon_MouseDoubleClick);
             // 
             // contextMenuStripNotify
             // 
@@ -540,7 +540,7 @@
             this.toolStripMenuItemStartSearch.Name = "toolStripMenuItemStartSearch";
             this.toolStripMenuItemStartSearch.Size = new System.Drawing.Size(136, 22);
             this.toolStripMenuItemStartSearch.Text = "Start Search";
-            this.toolStripMenuItemStartSearch.Click += new System.EventHandler(this.toolStripMenuItemStartSearch_Click);
+            this.toolStripMenuItemStartSearch.Click += new System.EventHandler(this.ToolStrip_StartSearch_Click);
             // 
             // toolStripMenuItemStopSearch
             // 
@@ -548,7 +548,7 @@
             this.toolStripMenuItemStopSearch.Name = "toolStripMenuItemStopSearch";
             this.toolStripMenuItemStopSearch.Size = new System.Drawing.Size(136, 22);
             this.toolStripMenuItemStopSearch.Text = "Stop Search";
-            this.toolStripMenuItemStopSearch.Click += new System.EventHandler(this.toolStripMenuItemStopSearch_Click);
+            this.toolStripMenuItemStopSearch.Click += new System.EventHandler(this.ToolStrip_StopSearch_Click);
             // 
             // toolStripSeparator1
             // 
@@ -560,7 +560,7 @@
             this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
             this.toolStripMenuItemExit.Size = new System.Drawing.Size(136, 22);
             this.toolStripMenuItemExit.Text = "Exit";
-            this.toolStripMenuItemExit.Click += new System.EventHandler(this.toolStripMenuItemExit_Click);
+            this.toolStripMenuItemExit.Click += new System.EventHandler(this.ToolStrip_Exit_Click);
             // 
             // tableLayoutPanel3
             // 
@@ -619,6 +619,7 @@
             0,
             0,
             0});
+            this.numericUpDownMaxNotify.ValueChanged += new System.EventHandler(this.MaxNotifications_ValueChanged);
             // 
             // checkBoxParking
             // 
@@ -828,7 +829,7 @@
             this.trackBarMap.Size = new System.Drawing.Size(45, 314);
             this.trackBarMap.TabIndex = 32;
             this.trackBarMap.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.trackBarMap.Scroll += new System.EventHandler(this.trackBarMap_Scroll);
+            this.trackBarMap.Scroll += new System.EventHandler(this.TrackBarMap_Scroll);
             // 
             // myMap
             // 
@@ -855,9 +856,9 @@
             this.myMap.Size = new System.Drawing.Size(412, 378);
             this.myMap.TabIndex = 25;
             this.myMap.Zoom = 10D;
-            this.myMap.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.myMap_OnMarkerClick);
-            this.myMap.OnMapTypeChanged += new GMap.NET.MapTypeChanged(this.myMap_OnMapTypeChanged);
-            this.myMap.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.myMap_MouseWheel);
+            this.myMap.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.MyMap_OnMarkerClick);
+            this.myMap.OnMapTypeChanged += new GMap.NET.MapTypeChanged(this.MyMap_OnMapTypeChanged);
+            this.myMap.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.MyMap_MouseWheel);
             // 
             // comboBoxMap
             // 
@@ -869,7 +870,7 @@
             this.comboBoxMap.Size = new System.Drawing.Size(237, 21);
             this.comboBoxMap.Sorted = true;
             this.comboBoxMap.TabIndex = 35;
-            this.comboBoxMap.SelectedIndexChanged += new System.EventHandler(this.comboBoxMap_SelectedIndexChanged);
+            this.comboBoxMap.SelectedIndexChanged += new System.EventHandler(this.ComboBoxMap_SelectedIndexChanged);
             // 
             // panelInput
             // 
@@ -900,7 +901,7 @@
             this.panelResults.Size = new System.Drawing.Size(260, 222);
             this.panelResults.TabIndex = 38;
             // 
-            // FormSearch
+            // MainForm
             // 
             this.AcceptButton = this.buttonStart;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -917,7 +918,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(650, 658);
-            this.Name = "FormSearch";
+            this.Name = "MainForm";
             this.Text = "Gen Con Hotel Search";
             this.Load += new System.EventHandler(this.FormSearch_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGuests)).EndInit();
